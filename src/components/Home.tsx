@@ -1,67 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useJsApiLoader, GoogleMap, MarkerF } from "@react-google-maps/api";
-import { InterfaceMap } from "../styles/GoogleMapStyles";
+//Home.tsx
+import { useCurrentPosition } from "../hooks/useCurrentPosition";
+import { useMapApiLoader } from "../hooks/useMapsApi";
+import MapView from "./MapView";
 
-const containerStyle = {
-  width: "100%",
-  height: "550px",
-};
-//マップのスタイル
-const googleMapOptions = {
-  styles: InterfaceMap,
-};
+//const extraMapOptions: google.maps.MapOptions = {};
 
 const Home: React.FC = () => {
-  // 現在地を保持
-  const [currentPosition, setCurrentPosition] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const { isLoaded, loadError } = useMapApiLoader();
+  const { currentPosition, loading, error } = useCurrentPosition();
 
-  // Google Maps API の読み込み状態
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GMAP_KEY!,
-    libraries: ["places"],
-  });
+  if (!isLoaded) return <div>読み込み中です...</div>;
+  if (loadError) return <div>読み込みに失敗しました。</div>;
+  if (loading) return <div>現在地を取得中...</div>;
+  if (error) return <div>位置情報の取得に失敗しました。</div>;
+  if (!currentPosition) return null;
 
-  // マウント時に一度だけ現在地を取得
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          setCurrentPosition({
-            lat: coords.latitude,
-            lng: coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Geolocation error", error);
-        }
-      );
-    }
-  }, []);
-
-  // 読み込みエラー時
-  if (loadError) return <div>読み込みに失敗しました</div>;
-  // API 読み込み中 or 現在地取得中
-  if (!isLoaded || !currentPosition) return <div>現在地を取得中...</div>;
-
-  //マーカーを定義
-  const markerLabel: google.maps.MarkerLabel = {
-    text: "現在地",
-    fontFamily: "sans-serif",
-    fontSize: "7px",
-    fontWeight: "bold",
-  };
   return (
-    <GoogleMap
-      options={googleMapOptions}
-      mapContainerStyle={containerStyle}
+    <MapView
       center={currentPosition}
-      zoom={14}
-    >
-      <MarkerF position={currentPosition} label={markerLabel} />
-    </GoogleMap>
+      markers={[{ position: currentPosition, label: "現在地" }]}
+      //options={extraMapOptions}
+    />
   );
 };
 
