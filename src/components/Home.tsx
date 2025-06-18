@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useJsApiLoader, GoogleMap } from "@react-google-maps/api";
+import { useJsApiLoader, GoogleMap, MarkerF } from "@react-google-maps/api";
+import { InterfaceMap } from "../styles/GoogleMapStyles";
 
 const containerStyle = {
   width: "100%",
   height: "550px",
+};
+//マップのスタイル
+const googleMapOptions = {
+  styles: InterfaceMap,
 };
 
 const Home: React.FC = () => {
@@ -41,13 +46,21 @@ const Home: React.FC = () => {
   // API 読み込み中 or 現在地取得中
   if (!isLoaded || !currentPosition) return <div>現在地を取得中...</div>;
 
+  //マーカーを定義
+  const markerLabel: google.maps.MarkerLabel = {
+    text: "現在地",
+    fontFamily: "sans-serif",
+    fontSize: "7px",
+    fontWeight: "bold",
+  };
   return (
     <GoogleMap
+      options={googleMapOptions}
       mapContainerStyle={containerStyle}
       center={currentPosition}
       zoom={14}
     >
-      {/* 必要に応じてマーカーなどを配置 */}
+      <MarkerF position={currentPosition} label={markerLabel} />
     </GoogleMap>
   );
 };
