@@ -12,12 +12,14 @@ interface MapViewProps {
   center: google.maps.LatLngLiteral;
   markers?: Array<{ position: google.maps.LatLngLiteral; label?: string }>;
   options?: google.maps.MapOptions;
+  onMapClick?: (latLng: google.maps.LatLngLiteral) => void;
 }
 
 const MapView: React.FC<MapViewProps> = ({
   center,
   markers = [],
   options = {},
+  onMapClick,
 }) => {
   //マーカーを定義
   const defaultLabel: google.maps.MarkerLabel = {
@@ -38,6 +40,11 @@ const MapView: React.FC<MapViewProps> = ({
       mapContainerStyle={containerStyle}
       center={center}
       zoom={14}
+      onClick={(e) => {
+        if (e.latLng && onMapClick) {
+          onMapClick(e.latLng.toJSON());
+        }
+      }}
     >
       {markers.map((m, idx) => (
         <MarkerF

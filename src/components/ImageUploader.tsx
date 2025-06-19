@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { ImageUploaderStyles as s } from "../styles/ImageUploaderStyles";
 
-const Images: React.FC = () => {
+const ImageUploader: React.FC = () => {
   const [fileNames, setFileNames] = useState<string[]>([]); //選択したファイルの名前を管理するState
   const [files, setFiles] = useState<File[]>([]); //選択されたファイルを配列管理するState
   const [previews, setPreviews] = useState<string[]>([]); //プレビュー用URLを管理するState
@@ -53,20 +54,23 @@ const Images: React.FC = () => {
 
   return (
     <>
-      <div>
-        <label htmlFor="fileInput">ファイルを選択:</label>
+      <div style={s.container}>
+        <label htmlFor="fileInput" style={s.label}>
+          ファイルを選択:
+        </label>
         <input
           type="file"
           id="fileInput"
           accept="image/*" //画像のみ選択可
           multiple //複数選択可
           onChange={handleFileChange}
+          style={s.input}
         />
-        <div>
+        <div style={s.previewContainer}>
           {previews.map((src, idx) => (
-            <div key={idx}>
-              <p>選択中のファイル名：{fileNames[idx]}</p>
-              <img src={src} alt={`preview-${idx}`} />
+            <div key={idx} style={s.previewItem}>
+              <p style={s.fileName}>選択中のファイル名：{fileNames[idx]}</p>
+              <img src={src} alt={`preview-${idx}`} style={s.previewImage} />
             </div>
           ))}
         </div>
@@ -75,4 +79,4 @@ const Images: React.FC = () => {
   );
 };
 
-export default Images;
+export default ImageUploader;
