@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ImageUploaderStyles as s } from "../styles/ImageUploaderStyles";
 
-const ImageUploader: React.FC = () => {
+//propsの型をinterfaceで定義
+interface ImageUploaderProps {
+  onFilesChange: (files: File[]) => void;
+}
+
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onFilesChange }) => {
   const [fileNames, setFileNames] = useState<string[]>([]); //選択したファイルの名前を管理するState
   const [files, setFiles] = useState<File[]>([]); //選択されたファイルを配列管理するState
   const [previews, setPreviews] = useState<string[]>([]); //プレビュー用URLを管理するState
@@ -13,11 +18,13 @@ const ImageUploader: React.FC = () => {
     if (!fileList || fileList.length === 0) {
       setFileNames([]);
       setFiles([]);
+      onFilesChange([]); //returnのonChangeのときに同時に渡そうとしていたが悪手。handleFileChageに入れて一度に渡してしまう。
       return;
     }
 
     const selectedFiles = Array.from(fileList);
     setFiles(selectedFiles);
+    onFilesChange(selectedFiles); //returnのonChangeのときに同時に渡そうとしていたが悪手。handleFileChageに入れて一度に渡してしまう。
 
     //ファイル名だけの配列namesを作成し、stateにセット
     const names = selectedFiles.map((file) => file.name);
@@ -63,7 +70,7 @@ const ImageUploader: React.FC = () => {
           id="fileInput"
           accept="image/*" //画像のみ選択可
           multiple //複数選択可
-          onChange={handleFileChange}
+          onChange={handleFileChange} //一つのハンドラだけ渡す
           style={s.input}
         />
         <div style={s.previewContainer}>

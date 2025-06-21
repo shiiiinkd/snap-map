@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import ImageUploader from "./components/ImageUploader";
+import SnapMapPage from "./components/SnapMapPage";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/imageUpload" element={<ImageUploader />} />
+        <Route path="/page" element={<SnapMapPage />} />
       </Routes>
     </>
   );
