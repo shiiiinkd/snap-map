@@ -1,3 +1,4 @@
+//useRecords.ts
 import { useState } from "react";
 
 type LatLng = { lat: number; lng: number };
@@ -8,9 +9,20 @@ export const useRecords = () => {
 
   //新しいレコードを末尾追加(...スプレッド構文で以前の配列に新しい要素を追加できる)
   const addRecord = (place: LatLng, photos: File[]) => {
-    const newRecord: Record = { place, photos };
-    setRecords((prev) => [...prev, newRecord]);
-    console.log("画像:", records);
+    setRecords((prev) => {
+      //既存を確認
+      const idx = prev.findIndex(
+        (r) => r.place.lat === place.lat && r.place.lng === place.lng
+      );
+      if (idx !== -1) {
+        //既存レコード発見、photosをマージ
+        return prev.map((r, i) =>
+          i === idx ? { ...r, photos: [...r.photos, ...photos] } : r
+        );
+      } else {
+        return [...prev, { place, photos: photos }];
+      }
+    });
   };
 
   //指定したplaceに対してphotos(選択した画像)を取得する
@@ -18,6 +30,7 @@ export const useRecords = () => {
     const match = records.find(
       (r) => r.place.lat === place.lat && r.place.lng === place.lng
     );
+
     return match ? match.photos : [];
   };
 

@@ -1,87 +1,81 @@
-import React, { useEffect, useState } from "react";
+//src/components/ImageUploader.tsx
+import React, { useState } from "react";
 import { ImageUploaderStyles as s } from "../styles/ImageUploaderStyles";
-
+import { useFilePreviews } from "../hooks/useFilePreviews";
+import type { PreviewItem } from "../hooks/useFilePreviews";
+import {
+  Box,
+  Input,
+  SimpleGrid,
+  Text,
+  Image as ChakraImage,
+} from "@chakra-ui/react";
 //propsの型をinterfaceで定義
 interface ImageUploaderProps {
   onFilesChange: (files: File[]) => void;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({ onFilesChange }) => {
-  const [fileNames, setFileNames] = useState<string[]>([]); //選択したファイルの名前を管理するState
   const [files, setFiles] = useState<File[]>([]); //選択されたファイルを配列管理するState
-  const [previews, setPreviews] = useState<string[]>([]); //プレビュー用URLを管理するState
+  const previews: PreviewItem[] = useFilePreviews(files); //プレビュー用URLを管理するState
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.currentTarget.files;
 
     //ファイルが未選択または0件ならreturnで閉じる
     if (!fileList || fileList.length === 0) {
-      setFileNames([]);
       setFiles([]);
-      onFilesChange([]); //returnのonChangeのときに同時に渡そうとしていたが悪手。handleFileChageに入れて一度に渡してしまう。
+      onFilesChange([]);
       return;
     }
 
     const selectedFiles = Array.from(fileList);
     setFiles(selectedFiles);
-    onFilesChange(selectedFiles); //returnのonChangeのときに同時に渡そうとしていたが悪手。handleFileChageに入れて一度に渡してしまう。
+    onFilesChange(selectedFiles);
 
     //ファイル名だけの配列namesを作成し、stateにセット
     const names = selectedFiles.map((file) => file.name);
-    setFileNames(names);
 
     if (names.length > 0) {
-      setFileNames(names);
       console.log("選択されたファイル:", names);
     } else {
-      setFileNames([""]);
       console.log("ファイルが選択されていません");
     }
   };
 
-  //filesが変化したらpreviewURLを更新する
-  useEffect(() => {
-    // 0件ならプレビューをリセット
-    if (files.length === 0) {
-      setPreviews((prev) => {
-        prev.forEach(URL.revokeObjectURL);
-        return [];
-      });
-      return;
-    }
-
-    // 最新のプレビュー URL を生成
-    setPreviews((prev) => {
-      // 古い URL の解放
-      prev.forEach(URL.revokeObjectURL);
-      // 新しい URL の配列を返す
-      return files.map((file) => URL.createObjectURL(file));
-    });
-  }, [files]);
-
   return (
     <>
-      <div style={s.container}>
+      <Box p={4} borderWidth="1px" borderRadius="md" style={s.container}>
         <label htmlFor="fileInput" style={s.label}>
           ファイルを選択:
         </label>
-        <input
+        <Input
           type="file"
           id="fileInput"
           accept="image/*" //画像のみ選択可
           multiple //複数選択可
-          onChange={handleFileChange} //一つのハンドラだけ渡す
+          onChange={handleFileChange} //ハンドラ
+          mb={4}
           style={s.input}
         />
-        <div style={s.previewContainer}>
-          {previews.map((src, idx) => (
-            <div key={idx} style={s.previewItem}>
-              <p style={s.fileName}>選択中のファイル名：{fileNames[idx]}</p>
-              <img src={src} alt={`preview-${idx}`} style={s.previewImage} />
-            </div>
+        <SimpleGrid columns={[2, 3]} spacing={4} style={s.previewContainer}>
+          {previews.map(({ src, name }, idx) => (
+            <Box key={idx} textAlign="center" style={s.previewItem}>
+              <Text fontSize="sm" mb={2} isTruncated style={s.fileName}>
+                選択中のファイル名：{name}
+              </Text>
+              <ChakraImage
+                src={src}
+                alt={`preview-${idx}`}
+                boxSize="80px"
+                objectFit="cover"
+                borderRadius="md"
+                style={s.previewImage}
+              />
+            </Box>
           ))}
-        </div>
-      </div>
+        </SimpleGrid>
+      </Box>
     </>
   );
 };
