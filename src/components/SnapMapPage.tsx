@@ -14,7 +14,7 @@ import PhotoGallery from "./PhotoGallery";
 const SnapMapPage: React.FC = () => {
   const { isLoaded, loadError } = useMapApiLoader();
   const { currentPosition, loading, error } = useCurrentPosition();
-  const { addRecord, getPhotosFor } = useRecords();
+  const { addRecord, deleteRecord, getPhotosFor } = useRecords();
   const [selectedPlace, setSelectedPlace] =
     useState<google.maps.LatLngLiteral | null>(null);
 
@@ -32,11 +32,20 @@ const SnapMapPage: React.FC = () => {
   };
   const handleAdd = () => {
     if (selectedPlace && files.length > 0) {
+      //filesは今追加しようとしている未追加ファイル
       addRecord(selectedPlace, files);
       setFiles([]);
     }
   };
   const photos = selectedPlace ? getPhotosFor(selectedPlace) : [];
+
+  const handleDelete = () => {
+    if (selectedPlace && photos.length > 0) {
+      //photosはすでに追加済みのファイル
+      deleteRecord(selectedPlace);
+      //setFiles([]);
+    }
+  };
 
   return (
     <>
@@ -62,8 +71,8 @@ const SnapMapPage: React.FC = () => {
         </Box>
         <Box width="300px">
           <ImageUploader onFilesChange={setFiles} />
-          {/* onFilesChange={setFiles } */}
-          {/* 次のステップで選択地の写真一覧を出す */}
+
+          {/* 追加機能 */}
           <Button
             onClick={handleAdd}
             isDisabled={!selectedPlace || files.length === 0}
@@ -76,6 +85,18 @@ const SnapMapPage: React.FC = () => {
 
           {/* 選択地の写真ギャラリー */}
           {selectedPlace && <PhotoGallery photos={photos} />}
+
+          {/* 削除機能 */}
+          <Button
+            onClick={handleDelete}
+            // 写真があるときに削除できるように変更する
+            isDisabled={!selectedPlace || photos.length === 0}
+            mt="0.5rem"
+            width="100%"
+            colorScheme="teal"
+          >
+            削除
+          </Button>
         </Box>
       </Flex>
 

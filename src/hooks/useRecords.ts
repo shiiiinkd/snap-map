@@ -25,6 +25,20 @@ export const useRecords = () => {
     });
   };
 
+  //既存のレコードを削除
+  const deleteRecord = (place: LatLng) => {
+    setRecords((prev) =>
+      prev.map((r) =>
+        r.place.lat === place.lat && r.place.lng === place.lng
+          ? {
+              ...r,
+              photos: [],
+            }
+          : r
+      )
+    );
+  };
+
   //指定したplaceに対してphotos(選択した画像)を取得する
   const getPhotosFor = (place: LatLng): File[] => {
     const match = records.find(
@@ -37,6 +51,7 @@ export const useRecords = () => {
   return {
     records,
     addRecord,
+    deleteRecord,
     getPhotosFor,
   };
 };
