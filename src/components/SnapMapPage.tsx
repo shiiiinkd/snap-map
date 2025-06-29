@@ -7,9 +7,9 @@ import { useCurrentPosition } from "../hooks/useCurrentPosition";
 import { useMapApiLoader } from "../hooks/useMapsApi";
 import { Link } from "react-router-dom";
 import { Flex, Box, Button } from "@chakra-ui/react";
+import PhotoGallery from "./PhotoGallery";
 
 //const extraMapOptions: google.maps.MapOptions = {};
-
 //オブジェクトを返すものは{}, 配列を返すものは[]で定義
 const SnapMapPage: React.FC = () => {
   const { isLoaded, loadError } = useMapApiLoader();
@@ -75,34 +75,7 @@ const SnapMapPage: React.FC = () => {
           </Button>
 
           {/* 選択地の写真ギャラリー */}
-          {selectedPlace && (
-            <Box mt="1rem">
-              <h2>この場所の写真</h2>
-              {photos.length > 0 ? (
-                <Flex wrap="wrap" gap="0.5rem">
-                  {photos.map((file, idx) => (
-                    <Box key={idx} textAlign="center">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={file.name}
-                        style={{
-                          width: 80,
-                          height: 80,
-                          objectFit: "cover",
-                          borderRadius: 4,
-                        }}
-                      />
-                      <Box fontSize="12px" wordBreak="break-all">
-                        {file.name}
-                      </Box>
-                    </Box>
-                  ))}
-                </Flex>
-              ) : (
-                <p>この場所にはまだ写真がありません</p>
-              )}
-            </Box>
-          )}
+          {selectedPlace && <PhotoGallery photos={photos} />}
         </Box>
       </Flex>
 
