@@ -60,9 +60,19 @@ const SnapMapPage: React.FC = () => {
           <MapView
             center={currentPosition}
             markers={[
-              { position: currentPosition, label: "現在地" },
+              {
+                position: currentPosition,
+                label: "現在地",
+                kind: "current" as const,
+              },
               ...(selectedPlace
-                ? [{ position: selectedPlace, label: "選択" }]
+                ? [
+                    {
+                      position: selectedPlace,
+                      label: "選択",
+                      kind: "serected" as const,
+                    },
+                  ]
                 : []),
             ]}
             onMapClick={handleMapClick}

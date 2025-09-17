@@ -8,10 +8,16 @@ const containerStyle = {
   height: "550px",
 };
 
+type MarkerVM = {
+  position: google.maps.LatLngLiteral;
+  label?: string;
+  kind?: "current" | "serected";
+};
+
 //propsの型をinterfaceで定義
 interface MapViewProps {
   center: google.maps.LatLngLiteral;
-  markers?: Array<{ position: google.maps.LatLngLiteral; label?: string }>;
+  markers?: MarkerVM[];
   options?: google.maps.MapOptions;
   onMapClick?: (latLng: google.maps.LatLngLiteral) => void;
 }
@@ -53,11 +59,14 @@ const MapView: React.FC<MapViewProps> = ({
           position={m.position}
           label={m.label ? { text: m.label } : defaultLabel}
           onLoad={(marker) => {
-            marker.setIcon({
-              url: currentIconURL,
-              scaledSize: new window.google.maps.Size(28, 28),
-              anchor: new window.google.maps.Point(14, 14),
-            });
+            //現在位置と選択位置でピンを分ける。マップ読み込み後にscaledSizeが設定されるようにsetIconで定義。
+            if (m.kind === "current") {
+              marker.setIcon({
+                url: currentIconURL,
+                scaledSize: new window.google.maps.Size(28, 28),
+                anchor: new window.google.maps.Point(14, 14),
+              });
+            }
           }}
         />
       ))}
