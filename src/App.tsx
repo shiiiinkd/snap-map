@@ -10,7 +10,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/imageUpload" element={<ImageUploader />} />
+        <Route
+          path="/imageUpload"
+          element={<ImageUploader onFilesChange={() => {}} />}
+        />
         <Route path="/page" element={<SnapMapPage />} />
       </Routes>
     </>
