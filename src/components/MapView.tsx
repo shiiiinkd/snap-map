@@ -1,6 +1,7 @@
 //MapView.tsx
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import { InterfaceMap } from "../styles/GoogleMapStyles";
+import currentIconURL from "../assets/current_marker.png";
 
 const containerStyle = {
   width: "100%",
@@ -51,6 +52,13 @@ const MapView: React.FC<MapViewProps> = ({
           key={idx}
           position={m.position}
           label={m.label ? { text: m.label } : defaultLabel}
+          onLoad={(marker) => {
+            marker.setIcon({
+              url: currentIconURL,
+              scaledSize: new window.google.maps.Size(28, 28),
+              anchor: new window.google.maps.Point(14, 14),
+            });
+          }}
         />
       ))}
     </GoogleMap>
