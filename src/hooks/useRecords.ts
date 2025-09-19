@@ -44,7 +44,7 @@ export const useRecords = () => {
     const match = records.find(
       (r) => r.place.lat === place.lat && r.place.lng === place.lng
     );
-
+    console.log("現在のrecords:", records);
     return match ? match.photos : [];
   };
 

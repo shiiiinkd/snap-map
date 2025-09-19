@@ -11,7 +11,7 @@ const containerStyle = {
 type MarkerVM = {
   position: google.maps.LatLngLiteral;
   label?: string;
-  kind?: "current" | "serected";
+  kind?: "current" | "unsaved" | "saved";
 };
 
 //propsの型をinterfaceで定義
