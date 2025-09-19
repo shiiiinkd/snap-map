@@ -5,7 +5,7 @@ import currentIconURL from "../assets/current_marker.png";
 
 const containerStyle = {
   width: "100%",
-  height: "550px",
+  height: "100%",
 };
 
 type MarkerVM = {

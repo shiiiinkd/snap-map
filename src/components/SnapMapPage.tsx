@@ -49,36 +49,7 @@ const SnapMapPage: React.FC = () => {
 
   return (
     <>
-      <Flex gap="1rem">
-        <Box
-          flex="1"
-          height="500px"
-          borderWidth="1px"
-          borderRadius="md"
-          overflow="hidden"
-        >
-          <MapView
-            center={currentPosition}
-            markers={[
-              {
-                position: currentPosition,
-                label: "現在地",
-                kind: "current" as const,
-              },
-              ...(selectedPlace
-                ? [
-                    {
-                      position: selectedPlace,
-                      label: "選択",
-                      kind: "serected" as const,
-                    },
-                  ]
-                : []),
-            ]}
-            onMapClick={handleMapClick}
-            //options={extraMapOptions}
-          />
-        </Box>
+      <Flex gap="1rem" height="100vh">
         <Box width="300px">
           <ImageUploader onFilesChange={setFiles} />
 
@@ -107,6 +78,35 @@ const SnapMapPage: React.FC = () => {
           >
             削除
           </Button>
+        </Box>
+        <Box
+          flex="1"
+          height="100%"
+          borderWidth="1px"
+          borderRadius="md"
+          overflow="hidden"
+        >
+          <MapView
+            center={currentPosition}
+            markers={[
+              {
+                position: currentPosition,
+                label: "現在地",
+                kind: "current" as const,
+              },
+              ...(selectedPlace
+                ? [
+                    {
+                      position: selectedPlace,
+                      label: "選択",
+                      kind: "serected" as const,
+                    },
+                  ]
+                : []),
+            ]}
+            onMapClick={handleMapClick}
+            //options={extraMapOptions}
+          />
         </Box>
       </Flex>
 
