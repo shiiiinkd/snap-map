@@ -24,6 +24,7 @@ export const ImageUploaderStyles = {
     justifyContent: "center" as const,
   },
   previewItem: {
+    width: "90%",
     display: "flex",
     flexDirection: "column" as const,
     alignItems: "center" as const,

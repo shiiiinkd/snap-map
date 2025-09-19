@@ -5,13 +5,13 @@ import currentIconURL from "../assets/current_marker.png";
 
 const containerStyle = {
   width: "100%",
-  height: "550px",
+  height: "100%",
 };
 
 type MarkerVM = {
   position: google.maps.LatLngLiteral;
   label?: string;
-  kind?: "current" | "serected";
+  kind?: "current" | "unsaved" | "saved";
 };
 
 //propsの型をinterfaceで定義
