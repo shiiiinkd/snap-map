@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FaUserCheck } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -89,6 +90,8 @@ const Login = () => {
           </CardBody>
         </Card>
       </Flex>
+
+      <Link to="/">Back to Home</Link>
     </>
   );
 };
