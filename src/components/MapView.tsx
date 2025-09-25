@@ -20,6 +20,7 @@ interface MapViewProps {
   markers?: MarkerVM[];
   options?: google.maps.MapOptions;
   onMapClick?: (latLng: google.maps.LatLngLiteral) => void;
+  onMarkerClick?: (marker: MarkerVM) => void;
 }
 
 const MapView: React.FC<MapViewProps> = ({
@@ -27,6 +28,7 @@ const MapView: React.FC<MapViewProps> = ({
   markers = [],
   options = {},
   onMapClick,
+  onMarkerClick,
 }) => {
   //マーカーを定義
   const defaultLabel: google.maps.MarkerLabel = {
@@ -58,6 +60,7 @@ const MapView: React.FC<MapViewProps> = ({
           key={idx}
           position={m.position}
           label={m.label ? { text: m.label } : defaultLabel}
+          onClick={() => onMarkerClick?.(m)}
           onLoad={(marker) => {
             //現在位置と選択位置でピンを分ける。マップ読み込み後にscaledSizeが設定されるようにsetIconで定義。
             if (m.kind === "current") {

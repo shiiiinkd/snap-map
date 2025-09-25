@@ -20,6 +20,7 @@ const SnapMapPage: React.FC = () => {
     useState<google.maps.LatLngLiteral | null>(null);
 
   const [files, setFiles] = useState<File[]>([]);
+  const [shouldResetPreview, setShouldResetPreview] = useState(false);
   const photos = unsavedPlace ? getPhotosFor(unsavedPlace) : [];
 
   if (!isLoaded) return <Box>読み込み中です...</Box>;
@@ -29,16 +30,28 @@ const SnapMapPage: React.FC = () => {
   if (!currentPosition) return null;
 
   const handleMapClick = (latLng: google.maps.LatLngLiteral) => {
-    console.log("クリック座標", latLng);
+    console.log("クリック座標", latLng, "mapClickの調査", records);
     setUnsavedPlace(latLng);
+  };
+
+  const handleMarkerClick = (marker: {
+    position: google.maps.LatLngLiteral;
+    label?: string;
+    kind?: "current" | "unsaved" | "saved";
+  }) => {
+    if (marker.kind === "saved" || marker.kind === "unsaved") {
+      setUnsavedPlace(marker.position);
+      setFiles([]);
+    }
   };
 
   const handleAdd = () => {
     if (unsavedPlace && files.length > 0) {
       //filesは今追加しようとしている未追加ファイル
       addRecord(unsavedPlace, files);
-
+      console.log("handleAddの調査", records);
       setFiles([]);
+      setShouldResetPreview(true);
     }
   };
 
@@ -56,22 +69,40 @@ const SnapMapPage: React.FC = () => {
 
     // 未保存マーカー（現在選択中のマーカー）
     ...(unsavedPlace
-      ? [{ position: unsavedPlace, label: "選択中", kind: "unsaved" as const }]
+      ? [
+          {
+            position: unsavedPlace,
+            label: "選択中",
+            kind: "unsaved" as const,
+          },
+        ]
       : []),
 
     // 保存済みマ―カー）
-    ...records.map((record) => ({
-      position: record.place,
-      label: "保存済み",
-      kind: "saved" as const,
-    })),
+    ...records
+      .filter((record) => {
+        if (!unsavedPlace) return true;
+        return !(
+          record.place.lat === unsavedPlace.lat &&
+          record.place.lng === unsavedPlace.lng
+        );
+      })
+      .map((record) => ({
+        position: record.place,
+        label: "保存済み",
+        kind: "saved" as const,
+      })),
   ];
 
   return (
     <>
       <Flex gap="1rem" height="100vh">
         <Box width="300px">
-          <ImageUploader onFilesChange={setFiles} />
+          <ImageUploader
+            onFilesChange={setFiles}
+            shouldResetPreview={shouldResetPreview}
+            onResetPreview={() => setShouldResetPreview(false)}
+          />
 
           {/* 追加機能 */}
           <Button
@@ -110,6 +141,7 @@ const SnapMapPage: React.FC = () => {
             center={currentPosition}
             markers={markers}
             onMapClick={handleMapClick}
+            onMarkerClick={handleMarkerClick}
             //options={extraMapOptions}
           />
         </Box>
