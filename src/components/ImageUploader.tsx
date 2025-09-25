@@ -1,5 +1,5 @@
 //src/components/ImageUploader.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ImageUploaderStyles as s } from "../styles/ImageUploaderStyles";
 import { useFilePreviews } from "../hooks/useFilePreviews";
 import type { PreviewItem } from "../hooks/useFilePreviews";
@@ -13,11 +13,30 @@ import {
 //propsの型をinterfaceで定義
 interface ImageUploaderProps {
   onFilesChange: (files: File[]) => void;
+  onResetPreview: () => void;
+  shouldResetPreview: boolean;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onFilesChange }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({
+  onFilesChange,
+  onResetPreview,
+  shouldResetPreview,
+}) => {
   const [files, setFiles] = useState<File[]>([]); //選択されたファイルを配列管理するState
   const previews: PreviewItem[] = useFilePreviews(files); //プレビュー用URLを管理するState
+
+  // shouldResetPreviewが変化した時にリセット実行
+  useEffect(() => {
+    if (shouldResetPreview) {
+      setFiles([]);
+      onFilesChange([]);
+      const input = document.getElementById("fileInput") as HTMLInputElement;
+      if (input) {
+        input.value = "";
+      }
+      onResetPreview();
+    }
+  }, [shouldResetPreview, onFilesChange, onResetPreview]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.currentTarget.files;

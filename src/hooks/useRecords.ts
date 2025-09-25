@@ -28,13 +28,8 @@ export const useRecords = () => {
   //既存のレコードを削除
   const deleteRecord = (place: LatLng) => {
     setRecords((prev) =>
-      prev.map((r) =>
-        r.place.lat === place.lat && r.place.lng === place.lng
-          ? {
-              ...r,
-              photos: [],
-            }
-          : r
+      prev.filter(
+        (r) => !(r.place.lat === place.lat && r.place.lng === place.lng)
       )
     );
   };

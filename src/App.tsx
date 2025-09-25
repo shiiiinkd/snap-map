@@ -12,7 +12,13 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route
           path="/imageUpload"
-          element={<ImageUploader onFilesChange={() => {}} />}
+          element={
+            <ImageUploader
+              onFilesChange={() => {}}
+              onResetPreview={() => {}}
+              shouldResetPreview={false}
+            />
+          }
         />
         <Route path="/page" element={<SnapMapPage />} />
       </Routes>
