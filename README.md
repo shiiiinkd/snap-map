@@ -14,6 +14,8 @@ https://snap-map-eight.vercel.app/
 |---------------------|----------------|----------------|
 | 画像アップロードと位置保存 | 登録済み写真を一覧表示 | 自分の現在地をワンクリックで表示 |
 
+##### 詳しい解説は以下をご覧ください。
+##### https://github.com/shiiiinkd/snap-map/blob/main/src/docs/DETAILS.md
 ---
 
 ## Features
